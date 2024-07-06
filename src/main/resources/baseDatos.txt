@@ -1,0 +1,179 @@
+CREATE DATABASE db_gastroworld;
+USE db_gastroworld;
+
+CREATE TABLE tb_usuario(
+id_usuario INT AUTO_INCREMENT NOT NULL,
+nombre_usuario VARCHAR(50) NOT NULL,
+primer_apellido VARCHAR(25) NOT NULL,
+segundo_apellido VARCHAR(25) NOT NULL,
+dni CHAR(8) NOT NULL,
+correo VARCHAR(60) NOT NULL,
+celular CHAR(9) NOT NULL,
+password VARCHAR(30) NOT NULL,
+PRIMARY KEY(id_usuario)
+);
+
+CREATE TABLE tb_categoria(
+id_categoria INT AUTO_INCREMENT,
+categoria VARCHAR(20),
+PRIMARY KEY(id_categoria)
+);
+
+CREATE TABLE tb_plato(
+id_plato INT AUTO_INCREMENT NOT NULL,
+id_categoria INT NOT NULL,
+nombre VARCHAR(40) NOT NULL,
+precio DECIMAL(6,2) NOT NULL,
+disponible BOOLEAN NOT NULL,
+descripcion VARCHAR(250) NOT NULL,
+grasa DECIMAL(5,2) NOT NULL,
+azucar DECIMAL(5,2)NOT NULL,
+proteina DECIMAL(5,2) NOT NULL,
+sal DECIMAL(5,2) NOT NULL,
+fibra DECIMAL(5,2) NOT NULL,
+vitamina VARCHAR(15) NOT NULL,
+mineral VARCHAR(15)NOT NULL,
+alergeno VARCHAR(60) NOT NULL,
+PRIMARY KEY(id_plato),
+FOREIGN KEY(id_categoria) REFERENCES tb_categoria(id_categoria)
+ON UPDATE RESTRICT
+ON DELETE CASCADE
+);
+
+CREATE TABLE tb_pedido(
+id_pedido INT AUTO_INCREMENT NOT NULL,
+id_usuario INT NOT NULL,
+PRIMARY KEY(id_pedido),
+FOREIGN KEY(id_usuario) REFERENCES tb_usuario(id_usuario)
+ON UPDATE RESTRICT
+ON DELETE CASCADE
+);
+
+CREATE TABLE tb_detalle_pedido(
+id_detalle_pedido INT AUTO_INCREMENT NOT NULL,
+id_pedido INT NOT NULL,
+id_plato INT NOT NULL,
+cantidad INT NOT NULL,
+PRIMARY KEY(id_detalle_pedido),
+FOREIGN KEY(id_pedido) REFERENCES tb_pedido(id_pedido)
+ON UPDATE RESTRICT
+ON DELETE CASCADE,
+FOREIGN KEY(id_plato) REFERENCES tb_plato(id_plato)
+ON UPDATE CASCADE
+ON DELETE RESTRICT
+);
+
+CREATE TABLE tb_meza(
+id_meza INT AUTO_INCREMENT NOT NULL,
+meza VARCHAR(3) NOT NULL,
+PRIMARY KEY(id_meza)
+);
+
+CREATE TABLE tb_delivery(
+id_delivery INT AUTO_INCREMENT NOT NULL,
+nombre VARCHAR(40) NOT NULL,
+apellido_materno VARCHAR(20) NOT NULL,
+apellido_paterno VARCHAR(20) NOT NULL,
+dni CHAR(8),
+PRIMARY KEY(id_delivery)
+);
+
+CREATE TABLE tb_boleta(
+id_boleta INT NOT NULL,
+id_detalle_pedido INT NOT NULL,
+delivey BOOLEAN,
+id_delivery INT NULL,
+local BOOLEAN,
+id_meza INT NULL,
+estado_boleta BOOLEAN,
+total DECIMAL(6,2),
+fecha DATETIME,
+PRIMARY KEY(id_boleta,id_detalle_pedido),
+FOREIGN KEY(id_detalle_pedido)REFERENCES tb_detalle_pedido(id_detalle_pedido),
+FOREIGN KEY(id_delivery)REFERENCES tb_delivery(id_delivery)
+ON DELETE RESTRICT
+ON UPDATE CASCADE,
+FOREIGN KEY(id_meza)REFERENCES tb_meza(id_meza)
+ON DELETE RESTRICT
+ON UPDATE CASCADE
+);
+
+#MODIFICACIONES
+/*
+//CAMBIAMOS EL NOMBRE DE LOS CAMPOS DEL USUARIO
+ALTER TABLE tb_usuario RENAME COLUMN apellido_materno to primer_apellido;
+ALTER TABLE tb_usuario RENAME COLUMN apellido_paterno to segundo_apellido;
+//AGREGAMOS EL CAMPO PASSWORD
+ALTER TABLE tb_usuario ADD COLUMN password VARCHAR(30);
+*/
+#Insertar usuario
+INSERT INTO tb_usuario VALUES(NULL,"ricardo","alvarado","huamani","71962555","ricardo@gmail.com","987678987","12345");
+#Insertar categirias
+INSERT INTO tb_categoria (categoria) VALUES ('Ensalada');
+INSERT INTO tb_categoria (categoria) VALUES ('Pasta');
+INSERT INTO tb_categoria (categoria) VALUES ('Carnes');
+INSERT INTO tb_categoria (categoria) VALUES ('Sopas');
+INSERT INTO tb_categoria (categoria) VALUES ('Bebidas');
+INSERT INTO tb_categoria (categoria) VALUES ('Postres');
+
+#Insertar platos
+-- Ensalada
+INSERT INTO tb_plato (id_categoria, nombre, precio, disponible, descripcion, grasa, azucar, proteina, sal, fibra, vitamina, mineral, alergeno)
+VALUES (1, 'Ensalada César', 5.99, TRUE, 'Ensalada con pollo, queso parmesano, crutones y aderezo César', 10.50, 2.00, 7.00, 1.50, 2.50, 'A', 'Calcio', 'Lácteos');
+INSERT INTO tb_plato (id_categoria, nombre, precio, disponible, descripcion, grasa, azucar, proteina, sal, fibra, vitamina, mineral, alergeno)
+VALUES (1, 'Ensalada Griega', 6.50, TRUE, 'Ensalada con tomate, pepino, cebolla, aceitunas y queso feta', 8.00, 2.50, 5.00, 1.20, 3.00, 'C', 'Hierro', 'Lácteos');
+INSERT INTO tb_plato (id_categoria, nombre, precio, disponible, descripcion, grasa, azucar, proteina, sal, fibra, vitamina, mineral, alergeno)
+VALUES (1, 'Ensalada de Quinoa', 7.00, TRUE, 'Ensalada de quinoa con verduras frescas y aderezo de limón', 5.00, 3.00, 6.00, 0.80, 4.00, 'B', 'Magnesio', 'Ninguno');
+INSERT INTO tb_plato (id_categoria, nombre, precio, disponible, descripcion, grasa, azucar, proteina, sal, fibra, vitamina, mineral, alergeno)
+VALUES (1, 'Ensalada Caprese', 6.99, TRUE, 'Ensalada con tomate, mozzarella fresca y albahaca', 12.00, 1.00, 8.00, 0.50, 1.50, 'D', 'Fósforo', 'Lácteos');
+
+
+-- Pasta
+INSERT INTO tb_plato (id_categoria, nombre, precio, disponible, descripcion, grasa, azucar, proteina, sal, fibra, vitamina, mineral, alergeno)
+VALUES (2, 'Espagueti a la Boloñesa', 8.99, TRUE, 'Espagueti con salsa de carne y tomate', 14.00, 5.00, 20.00, 1.80, 2.00, 'A', 'Hierro', 'Gluten');
+INSERT INTO tb_plato (id_categoria, nombre, precio, disponible, descripcion, grasa, azucar, proteina, sal, fibra, vitamina, mineral, alergeno)
+VALUES (2, 'Fettuccine Alfredo', 9.50, TRUE, 'Fettuccine con salsa Alfredo y parmesano', 20.00, 3.00, 15.00, 1.20, 1.80, 'B', 'Calcio', 'Gluten, Lácteos');
+INSERT INTO tb_plato (id_categoria, nombre, precio, disponible, descripcion, grasa, azucar, proteina, sal, fibra, vitamina, mineral, alergeno)
+VALUES (2, 'Penne Arrabiata', 7.99, TRUE, 'Penne con salsa de tomate picante', 10.00, 4.00, 8.00, 1.00, 2.50, 'C', 'Potasio', 'Gluten');
+INSERT INTO tb_plato (id_categoria, nombre, precio, disponible, descripcion, grasa, azucar, proteina, sal, fibra, vitamina, mineral, alergeno)
+VALUES (2, 'Lasaña', 10.99, TRUE, 'Lasaña de carne con salsa de tomate y queso', 18.00, 4.00, 15.00, 2.20, 1.80, 'A', 'Calcio', 'Gluten, Lácteos');
+
+-- Carnes
+INSERT INTO tb_plato (id_categoria, nombre, precio, disponible, descripcion, grasa, azucar, proteina, sal, fibra, vitamina, mineral, alergeno)
+VALUES (3, 'Bistec a la Parrilla', 15.00, TRUE, 'Bistec de res a la parrilla con patatas fritas', 22.00, 1.00, 30.00, 2.80, 1.20, 'B', 'Hierro', 'Ninguno');
+INSERT INTO tb_plato (id_categoria, nombre, precio, disponible, descripcion, grasa, azucar, proteina, sal, fibra, vitamina, mineral, alergeno)
+VALUES (3, 'Chuletas de Cordero', 18.50, TRUE, 'Chuletas de cordero con puré de patatas', 25.00, 2.00, 28.00, 2.50, 2.00, 'D', 'Zinc', 'Ninguno');
+INSERT INTO tb_plato (id_categoria, nombre, precio, disponible, descripcion, grasa, azucar, proteina, sal, fibra, vitamina, mineral, alergeno)
+VALUES (3, 'Pollo al Horno', 12.99, TRUE, 'Pollo asado con hierbas y verduras', 15.00, 1.00, 25.00, 1.80, 3.00, 'A', 'Selenio', 'Ninguno');
+INSERT INTO tb_plato (id_categoria, nombre, precio, disponible, descripcion, grasa, azucar, proteina, sal, fibra, vitamina, mineral, alergeno)
+VALUES (3, 'Cerdo a la Barbacoa', 14.50, TRUE, 'Costillas de cerdo con salsa barbacoa', 30.00, 5.00, 22.00, 2.00, 2.50, 'B', 'Fósforo', 'Ninguno');
+
+-- Sopas
+INSERT INTO tb_plato (id_categoria, nombre, precio, disponible, descripcion, grasa, azucar, proteina, sal, fibra, vitamina, mineral, alergeno)
+VALUES (4, 'Sopa de Tomate', 4.50, TRUE, 'Sopa cremosa de tomate con albahaca y crutones', 5.00, 3.00, 2.00, 1.20, 1.50, 'C', 'Hierro', 'Ninguno');
+INSERT INTO tb_plato (id_categoria, nombre, precio, disponible, descripcion, grasa, azucar, proteina, sal, fibra, vitamina, mineral, alergeno)
+VALUES (4, 'Sopa de Pollo', 5.00, TRUE, 'Sopa de pollo con fideos y verduras', 7.00, 1.50, 10.00, 1.50, 2.00, 'B', 'Zinc', 'Gluten');
+INSERT INTO tb_plato (id_categoria, nombre, precio, disponible, descripcion, grasa, azucar, proteina, sal, fibra, vitamina, mineral, alergeno)
+VALUES (4, 'Sopa de Verduras', 4.00, TRUE, 'Sopa de verduras variadas', 3.00, 2.00, 5.00, 1.00, 3.00, 'A', 'Potasio', 'Ninguno');
+INSERT INTO tb_plato (id_categoria, nombre, precio, disponible, descripcion, grasa, azucar, proteina, sal, fibra, vitamina, mineral, alergeno)
+VALUES (4, 'Sopa de Mariscos', 6.99, TRUE, 'Sopa de mariscos con especias', 8.00, 4.00, 15.00, 1.80, 2.00, 'D', 'Magnesio', 'Mariscos');
+
+-- Bebidas
+INSERT INTO tb_plato (id_categoria, nombre, precio, disponible, descripcion, grasa, azucar, proteina, sal, fibra, vitamina, mineral, alergeno)
+VALUES (5, 'Café Americano', 2.00, TRUE, 'Café negro sin azúcar', 0.00, 0.00, 0.00, 0.00, 0.00, 'B', 'Potasio', 'Ninguno');
+INSERT INTO tb_plato (id_categoria, nombre, precio, disponible, descripcion, grasa, azucar, proteina, sal, fibra, vitamina, mineral, alergeno)
+VALUES (5, 'Té Verde', 1.50, TRUE, 'Té verde sin azúcar', 0.00, 0.00, 0.00, 0.00, 0.00, 'C', 'Calcio', 'Ninguno');
+INSERT INTO tb_plato (id_categoria, nombre, precio, disponible, descripcion, grasa, azucar, proteina, sal, fibra, vitamina, mineral, alergeno)
+VALUES (5, 'Jugo de Naranja', 3.00, TRUE, 'Jugo de naranja natural', 0.00, 10.00, 1.00, 0.20, 1.00, 'A', 'Vitamina C', 'Ninguno');
+INSERT INTO tb_plato (id_categoria, nombre, precio, disponible, descripcion, grasa, azucar, proteina, sal, fibra, vitamina, mineral, alergeno)
+VALUES (5, 'Limonada', 2.50, TRUE, 'Limonada fresca con azúcar', 0.00, 12.00, 0.50, 0.10, 0.50, 'A', 'Vitamina C', 'Ninguno');
+
+-- Postres
+INSERT INTO tb_plato (id_categoria, nombre, precio, disponible, descripcion, grasa, azucar, proteina, sal, fibra, vitamina, mineral, alergeno)
+VALUES (6, 'Tarta de Manzana', 4.00, TRUE, 'Tarta de manzana con canela', 15.00, 20.00, 3.00, 0.50, 1.00, 'A', 'Hierro', 'Gluten, Lácteos');
+INSERT INTO tb_plato (id_categoria, nombre, precio, disponible, descripcion, grasa, azucar, proteina, sal, fibra, vitamina, mineral, alergeno)
+VALUES (6, 'Helado de Vainilla', 3.50, TRUE, 'Helado de vainilla con virutas de chocolate', 10.00, 18.00, 4.00, 0.30, 0.50, 'D', 'Calcio', 'Lácteos');
+INSERT INTO tb_plato (id_categoria, nombre, precio, disponible, descripcion, grasa, azucar, proteina, sal, fibra, vitamina, mineral, alergeno)
+VALUES (6, 'Brownie', 3.99, TRUE, 'Brownie de chocolate con nueces', 20.00, 22.00, 5.00, 0.80, 1.50, 'B', 'Magnesio', 'Gluten, Nueces');
+INSERT INTO tb_plato (id_categoria, nombre, precio, disponible, descripcion, grasa, azucar, proteina, sal, fibra, vitamina, mineral, alergeno)
+VALUES (6, 'Cheesecake', 5.00, TRUE, 'Cheesecake con salsa de frutas rojas', 25.00, 30.00, 7.00, 1.00, 1.00, 'A', 'Calcio', 'Lácteos, Gluten');
