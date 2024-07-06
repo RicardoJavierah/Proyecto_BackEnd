@@ -177,3 +177,6 @@ INSERT INTO tb_plato (id_categoria, nombre, precio, disponible, descripcion, gra
 VALUES (6, 'Brownie', 3.99, TRUE, 'Brownie de chocolate con nueces', 20.00, 22.00, 5.00, 0.80, 1.50, 'B', 'Magnesio', 'Gluten, Nueces');
 INSERT INTO tb_plato (id_categoria, nombre, precio, disponible, descripcion, grasa, azucar, proteina, sal, fibra, vitamina, mineral, alergeno)
 VALUES (6, 'Cheesecake', 5.00, TRUE, 'Cheesecake con salsa de frutas rojas', 25.00, 30.00, 7.00, 1.00, 1.00, 'A', 'Calcio', 'Lácteos, Gluten');
+
+-- Mesas
+INSERT INTO tb_meza (meza) VALUES ('A01'),('A02'),('A03'),('B01'),('B02'),('B03'),('C01'),('C02'),('C03');
