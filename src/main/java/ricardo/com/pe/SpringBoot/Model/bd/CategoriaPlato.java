@@ -1,13 +1,20 @@
 package ricardo.com.pe.SpringBoot.Model.bd;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
+
+import java.util.Set;
 
 @Entity
 @Table(name = "tb_categoria")
 @AllArgsConstructor
 @NoArgsConstructor
+@Getter @Setter
 public class CategoriaPlato {
 
     @Id
@@ -16,8 +23,4 @@ public class CategoriaPlato {
     private int id;
     @Column(name = "categoria")
     private String categoria;
-    /*
-    * id_categoria INT AUTO_INCREMENT,
-categoria VARCHAR(20),
-PRIMARY KEY(id_categoria)*/
 }
